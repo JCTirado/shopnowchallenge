@@ -1,0 +1,1302 @@
+ ▐▛███▛█   Claude Code v2.1.301
+▝▜██████▀  Opus 5.5 · Claude Pro
+ ▝▝   ▝▝   ~\OneDrive\Documentos\Tech Assesment\shopnowchallenge
+
+▎ [✻] [✻] [✻] · Share Claude Code and earn $10 in usage credits · /passes
+                                              
+
+● Login expired · Please run /login
+
+✻ Cooked for 0s · done 3:32 PM
+
+❯ /login 
+  ⎿  Login successful
+
+❯ i have this test for a company interview, i already cloned the repo                    
+  https://github.com/JCTirado/shopnowchallenge, can you read the readme and     
+  tell me if its something we can do together?                                  
+
+  Searched for 1 pattern, read 2 files (ctrl+o to expand)
+
+● PowerShell(cd shopnowchallenge; git remote -v; node -v)
+  ⎿  origin  https://github.com/JCTirado/shopnowchallenge.git (fetch)
+     origin  https://github.com/JCTirado/shopnowchallenge.git (push)
+     v26.13.1
+
+● Yes, we can do this together. The challenge actually requires you to use AI.
+  Part 4 asks you to document in ai/README.md which AI tools you used, what you
+  handed off to them, what you checked yourself, and what you threw out. So
+  working with me is expected, as long as you stay in charge and check what I
+  produce.
+
+  What the challenge asks for (QA role at a fake shop called "ShopNow"):
+  1. ANALYSIS.md: read SPEC.md and list the questions you'd ask the product
+     owner, in priority order, plus the unclear points and the assumptions
+     you're making.
+  2. BUGS.md: look into the 3 user reports in USER_REPORTS.md and find bugs
+     nobody reported. Test both through the web pages and through the API, and
+     give each bug an ID (BUG-01, BUG-02…).
+  3. tests/: write Playwright tests that fail today because of each bug and will
+     pass once it's fixed. The rules:
+     - put the bug ID in the test name
+     - call resetData in beforeEach
+     - find elements by their data-testid
+     - don't read app/ from the tests
+     - don't use skip/fixme/fail
+  4. ai/README.md: explain how you used AI.
+  5. Optional: point to where in the code each bug comes from, and fix bugs one
+     per commit.
+
+  Two things to know:
+  - Time counts. They time you from when you click "Start challenge" until you
+    submit. A shorter delivery with good priorities beats a longer, exhaustive
+    one.
+  - They grade your judgment. That means how you read the spec, which severe
+    bugs you catch, how clear your reports are, and how you checked my output. I
+    can explore the app, test the API, draft reports and write tests. You
+    should still reproduce each bug yourself and make the final calls on
+    severity and priority.
+
+  Setup:
+  - Node: you now have v26.13.1, which meets the "Node 22 or later" requirement.
+    The installer that was blocked earlier finished.
+  - Repo: your copy points to github.com/JCTirado/shopnowchallenge. The README
+    says to make your own public copy with "Use this template" and push your
+    work there. If JCTirado is your account, you're set. If it belongs to the
+    company, create your own copy from the template before we start committing.
+
+  Is JCTirado your account? And have you clicked "Start challenge" yet? Once
+  you're ready, I'll start by reading SPEC.md, USER_REPORTS.md and docs/API.md,
+  then running the app.
+
+✻ Worked for 19s · done 3:40 PM
+
+❯ i clicked on Start challenge, that's my github account                          
+
+● Bash(cd "/c/Users/milo_/OneDrive/Documentos/Tech Assesment/shopnowchallenge"
+      && git log --oneline | head && find . -path ./node_modules -prune -o -type
+      f -print | gr…)
+  ⎿  5abb9d0 Initial commit
+     ./.devcontainer/devcontainer.json
+     ./.gitignore
+     … +238 lines (ctrl+o to expand)
+
+● Bash(cd "/c/Users/milo_/OneDrive/Documentos/Tech Assesment/shopnowchallenge"
+      && for f in app/server/api.ts app/server/db.ts app/server/index.ts
+      app/shared/money.ts t…)
+  ⎿  === app/server/api.ts
+          1  import { randomUUID } from "node:crypto";
+          2  import { Router, type Request, type Response, type
+     NextFunction
+     … +368 lines (ctrl+o to expand)
+
+● Bash(cd "/c/Users/milo_/OneDrive/Documentos/Tech
+      Assesment/shopnowchallenge/app/web/src" && for f in api.ts auth.tsx
+      cart.tsx router.tsx main.tsx pages/*.tsx; do ech…)
+  ⎿  === api.ts
+          1  export class ApiError extends Error {
+          2    constructor(message: string, public status: number) {
+     … +688 lines (ctrl+o to expand)
+
+  Read 1 file (ctrl+o to expand)
+
+● Bash(cd "/c/Users/milo_/OneDrive/Documentos/Tech Assesment/shopnowchallenge"
+      && node -e '
+      const d=require("./app/data/seed.json");…)
+  ⎿  1 Ana Garcia ana@shopnow.test
+     2 Bruno Diaz bruno@shopnow.test
+     1 Ceramic mug Home 8.35 stock 25 floorbug q=3,6,9
+     … +14 lines (ctrl+o to expand)
+
+● I've read the spec and the app's code and found about 12 likely bugs,
+  including all 3 user reports. I'm writing Playwright tests to confirm each one
+  against the running app.
+
+● Update(tests\helpers.ts)
+  ⎿  Added 11 lines
+      11    expect(res.ok()).toBeTruthy();
+      12  }
+      13  
+      14 +/** Logs in through the API; the request context keeps the `sid
+         +` cookie for later calls. */                                   
+      15 +export async function apiLogin(request: APIRequestContext, user
+         +: { email: string; password: string } = USERS.ana) {           
+      16 +  const res = await request.post("/api/login", { data: user });
+      17 +  expect(res.ok()).toBeTruthy();                               
+      18 +}                                                              
+      19 +                                                               
+      20 +export const VALID_CHECKOUT = {                                
+      21 +  shipping: { name: "Ana Garcia", address: "1234 Corrientes Ave
+         +" },                                                           
+      22 +  card: { number: "4242424242424242" },                        
+      23 +};                                                             
+      24 +                                                               
+      25  export async function login(page: Page, user: { email: string; 
+          password: string } = USERS.ana) {
+      26    await page.goto("/login");
+      27    await page.getByTestId("login-email").fill(user.email);
+
+● Write(tests\api-checkout.spec.ts)
+  ⎿  Wrote 75 lines to tests\api-checkout.spec.ts
+       1 import { test, expect } from "@playwright/test";
+       2 import { apiLogin, resetData, USERS, VALID_CHECKOUT } from "./he
+         lpers";
+       4 test.beforeEach(async ({ request }) => {
+       5   await resetData(request);
+       6 });
+       7 
+         { request }) => {
+       9   // Seed: order #3 belongs to Bruno.
+      10   await apiLogin(request, USERS.ana);
+     … +81 lines (ctrl+o to expand)
+● Write(tests\ui-bugs.spec.ts)
+  ⎿  Wrote 128 lines to tests\ui-bugs.spec.ts
+       1 import { test, expect, type Page } from "@playwright/test";
+       2 import { login, resetData } from "./helpers";
+       3 
+       5   await resetData(request);
+       6 });
+       7 
+       8 async function addFromDetail(page: Page, productId: number, quan
+       9   await page.goto(`/product/${productId}`);
+      10   await page.getByTestId("quantity-select").selectOption(String(
+         quantity));
+     … +149 lines (ctrl+o to expand)
+
+● Update(tests\ui-bugs.spec.ts)
+  ⎿  Added 4 lines, removed 7 lines
+       99    await page.goto("/");
+      100    for (let i = 0; i < 3; i++) await page.getByTestId("quick-ad
+           d-8").click();
+      101  
+      102 -  await page.goto("/cart");                                   
+      103 -  // The cart may be empty here because of BUG-08; only check 
+          -when the line exists.                                         
+      104 -  if (await page.getByTestId("cart-line-8").isVisible()) {    
+      105 -    const quantity = Number(await page.getByTestId("cart-qty-8
+          -").inputValue());                                             
+      106 -    expect(quantity).toBeLessThanOrEqual(2);                  
+      107 -  }                                                           
+      108 -  await expect(page.getByTestId("nav-cart")).not.toContainText
+          -("(3)");                                                      
+      102 +  // Navigate in-app (no reload) so this test doesn't depend o
+          +n BUG-08.                                                     
+      103 +  await page.getByTestId("nav-cart").click();                 
+      104 +  const quantity = Number(await page.getByTestId("cart-qty-8")
+          +.inputValue());                                               
+      105 +  expect(quantity).toBeLessThanOrEqual(2);                    
+      106  });
+      107  
+      108  test("[BUG-10] line totals are rounded correctly to the cent",
+            async ({ page }) => {
+
+● PowerShell(npx playwright test --reporter=line 2>&1 | Select-String -Pattern
+            "✓|✘|passed|failed|Error:|Expected|Received" | Select-Object -First
+            120)
+  ⎿  Error: Exit code 1
+         Error: expect(received).toContain(expected) // indexOf
+         Expected value: 200
+         Received array: [403, 404]
+         Error: expect(received).toBe(expected) // Object.is equality
+         Expected: 409
+         Received: 201
+         Error: expect(received).toBe(expected) // Object.is equality
+         Expected: 400
+         Received: 201
+     … +79 lines (ctrl+o to expand)
+
+● 18 of the 20 tests fail, which is what we want: each failure confirms a bug.
+  The 2 that pass are the team's existing tests. Now I'll write the docs.
+
+● Write(BUGS.md)
+  ⎿  Added 182 lines, removed 13 lines
+        1  # Bugs found
+        2  
+        3 -Copy the block below for each bug. Sort them by priority (most
+          - important first).                                            
+        3 +Sorted by priority (most important first). Test data comes fro
+          +m a fresh `npm run reset`.                                    
+        4  
+        5  ---
+        6  
+        7 -## BUG-01 — Short, descriptive title                          
+        7 +## BUG-01 — Any logged-in user can read other users' orders (n
+          +ame, address, items)                                          
+        8  
+        9 -- **Source:** user report N / found by me                     
+       10 -- **Type:** UI / Logic / Integration / Data / Security        
+       11 -- **Severity:** Critical / High / Medium / Low                
+       12 -- **Priority:** P1 / P2 / P3 — and why                        
+       13 -- **Preconditions:**                                          
+        9 +- **Source:** found by me                                     
+       10 +- **Type:** Security                                          
+       11 +- **Severity:** Critical                                      
+       12 +- **Priority:** P1 — leaks other customers' personal data (nam
+          +e, shipping address, purchases). Anyone can do it by changing 
+          +the id in the URL.                                            
+       13 +- **Preconditions:** logged in as Ana. Order #3 belongs to Bru
+          +no.                                                           
+       14  - **Steps to reproduce:**
+       15 -  1.                                                          
+       16 -- **Expected result:**                                        
+       17 -- **Actual result:**                                          
+       18 -- **Evidence:** screenshot, request/response, video (optional)
+       19 -- **Automated test:** `tests/...` (if any)                    
+       20 -- **Root cause in the code (optional):**                      
+       15 +  1. Log in as `ana@shopnow.test`.                            
+       16 +  2. Open `http://localhost:4321/orders/3` (or `GET /api/order
+          +s/3`).                                                        
+       17 +- **Expected result:** `404` (or `403`). Ana sees only her own
+          + orders.                                                      
+       18 +- **Actual result:** `200` with Bruno's full order: "Ship to: 
+          +Bruno Diaz, …", items and total.                              
+       19 +- **Automated test:** `tests/api-checkout.spec.ts` — `[BUG-01]
+          +`                                                             
+       20 +- **Root cause in the code (optional):** `app/server/api.ts` `
+          +GET /orders/:id` looks up the order by id only and never check
+          +s `order.userId === user.id`.                                 
+       21 +                                                              
+       22 +## BUG-02 — Payments over $100 show "payment failed" but the c
+          +ard is charged and the order is created (User report 1)       
+       23 +                                                              
+       24 +- **Source:** user report 1                                   
+       25 +- **Type:** Integration                                       
+       26 +- **Severity:** Critical                                      
+       27 +- **Priority:** P1 — the customer is charged while being told 
+          +the payment failed. Retrying charges them again. This causes d
+          +irect money loss, chargebacks and support tickets.            
+       28 +- **Preconditions:** logged in. Cart total over $100 (e.g. 1 ×
+          + Ergonomic chair, $129).                                      
+       29 +- **Steps to reproduce:**                                     
+       30 +  1. Add 1 Ergonomic chair to the cart and go to checkout.    
+       31 +  2. Fill in valid shipping details and card `4242424242424242
+          +`, then click **Pay**.                                        
+       32 +  3. After ~3 s, "We couldn't process your payment. Please try
+          + again." appears.                                             
+       33 +  4. Open **My payments** / **My orders**.                    
+       34 +- **Expected result:** the app waits for the processor (the AP
+          +I docs say it "may take a few seconds") and shows the order co
+          +nfirmation. Under no circumstances does the user see "failed" 
+          +for a payment that was approved.                              
+       35 +- **Actual result:** an error is shown, the cart is kept, and 
+          +an approved $129.00 payment plus a new order exist. Clicking P
+          +ay again creates a second charge.                             
+       36 +- **Evidence:** test output: `/api/payments` returns `{"amount
+          +":129,"status":"approved","orderId":4}` after the UI showed th
+          +e error.                                                      
+       37 +- **Automated test:** `tests/ui-bugs.spec.ts` — both `[BUG-02]
+          +` tests                                                       
+       38 +- **Root cause in the code (optional):** `app/web/src/pages/Ch
+          +eckout.tsx` aborts the request after `PAYMENT_TIMEOUT_MS = 300
+          +0`. `app/server/api.ts` takes 4000 ms when `total > 100` and s
+          +till commits the payment and order, because aborting the HTTP 
+          +request doesn't cancel the server-side work. The server has no
+          + idempotency key either, so retries create duplicate charges. 
+       39 +                                                              
+       40 +## BUG-03 — The API sells more units than the available stock 
+          +(stock goes negative)                                         
+       41 +                                                              
+       42 +- **Source:** found by me                                     
+       43 +- **Type:** Logic / Data                                      
+       44 +- **Severity:** Critical                                      
+       45 +- **Priority:** P1 — overselling. The spec says users can't bu
+          +y more than the stock, and the docs promise `409` for out of s
+          +tock, but it never happens.                                   
+       46 +- **Preconditions:** logged in. Ergonomic chair (id 8) has sto
+          +ck 2.                                                         
+       47 +- **Steps to reproduce:**                                     
+       48 +  1. `POST /api/checkout` with `items: [{ "productId": 8, "qua
+          +ntity": 3 }]` and valid shipping/card.                        
+       49 +- **Expected result:** `409`, stock unchanged (2).            
+       50 +- **Actual result:** `201`, order created, stock becomes `-1`.
+          + Also reachable from the UI through BUG-09.                   
+       51 +- **Automated test:** `tests/api-checkout.spec.ts` — `[BUG-03]
+          +`                                                             
+       52 +- **Root cause in the code (optional):** `POST /checkout` in `
+          +app/server/api.ts` never compares `quantity` with `product.sto
+          +ck`.                                                          
+       53 +                                                              
+       54 +## BUG-04 — Checkout accepts zero, negative and fractional qua
+          +ntities                                                       
+       55 +                                                              
+       56 +- **Source:** found by me                                     
+       57 +- **Type:** Logic / Security                                  
+       58 +- **Severity:** High                                          
+       59 +- **Priority:** P1 — `quantity: -1` creates an order with a **
+          +negative total** and *increases* the stock. Mixing it with rea
+          +l items lets someone pay less than the price.                 
+       60 +- **Preconditions:** logged in.                               
+       61 +- **Steps to reproduce:**                                     
+       62 +  1. `POST /api/checkout` with `items: [{ "productId": 1, "qua
+          +ntity": -1 }]` (also try `0` and `1.5`).                      
+       63 +- **Expected result:** `400 invalid data`. The spec says quant
+          +ity is at least 1, and units are whole numbers.               
+       64 +- **Actual result:** `201`. With `-1` the order total is `-$8.
+          +35` and the mug stock goes from 25 to 26.                     
+       65 +- **Automated test:** `tests/api-checkout.spec.ts` — `[BUG-04]
+          +` (×3)                                                        
+       66 +- **Root cause in the code (optional):** `app/server/api.ts` d
+          +oes `Number(item.quantity)` without validating that it is a po
+          +sitive integer. The UI clamps quantity, but the server trusts 
+          +the client.                                                   
+       67 +                                                              
+       68 +## BUG-05 — Lowercase coupon code is "accepted" but gives 0% d
+          +iscount (User report 2)                                       
+       69 +                                                              
+       70 +- **Source:** user report 2                                   
+       71 +- **Type:** Logic                                             
+       72 +- **Severity:** High                                          
+       73 +- **Priority:** P2 — customers lose a promised discount, and t
+          +he UI tells them the coupon was applied. Easy to hit because p
+          +eople type codes in lowercase.                                
+       74 +- **Preconditions:** any product in the cart (e.g. 2 × Basic T
+          +-shirt = $28.70).                                             
+       75 +- **Steps to reproduce:**                                     
+       76 +  1. In the cart, type `flock10` and click **Apply**.         
+       77 +- **Expected result:** "Coupon FLOCK10 applied (10%)". Discoun
+          +t -$2.87, total $25.83 (the spec says codes are case-insensiti
+          +ve).                                                          
+       78 +- **Actual result:** "Coupon flock10 applied (0%)". Discount $
+          +0.00, total unchanged. `POST /api/coupons/validate {"code":"fl
+          +ock10"}` → `{"code":"flock10","percent":0}`.                  
+       79 +- **Automated test:** `tests/api-checkout.spec.ts` and `tests/
+          +ui-bugs.spec.ts` — `[BUG-05]`                                 
+       80 +- **Root cause in the code (optional):** `findCoupon` in `app/
+          +server/api.ts` finds the matching key case-insensitively but t
+          +hen reads `COUPONS[typed]` (the raw input) instead of `COUPONS
+          +[key]`.                                                       
+       81 +                                                              
+       82 +## BUG-06 — The API applies several coupons (or the same one t
+          +wice) to one purchase                                         
+       83 +                                                              
+       84 +- **Source:** found by me                                     
+       85 +- **Type:** Logic / Security                                  
+       86 +- **Severity:** High                                          
+       87 +- **Priority:** P2 — discounts stack (FLOCK10 + BIENVENIDA15 =
+          + 25%, or FLOCK10 ×10 = 100%), which costs revenue. The spec sa
+          +ys only one coupon per purchase.                              
+       88 +- **Preconditions:** logged in.                               
+       89 +- **Steps to reproduce:**                                     
+       90 +  1. `POST /api/checkout` with `coupons: ["FLOCK10", "BIENVENI
+          +DA15"]` (or `["FLOCK10","FLOCK10"]`).                         
+       91 +- **Expected result:** `400`.                                 
+       92 +- **Actual result:** `201`, discount = sum of all coupons.    
+       93 +- **Automated test:** `tests/api-checkout.spec.ts` — `[BUG-06]
+          +` (×2)                                                        
+       94 +- **Root cause in the code (optional):** `POST /checkout` loop
+          +s over all `coupons` and `cartTotals` (`app/shared/money.ts`) 
+          +sums every discount. The one-coupon rule exists only in the UI
+          +.                                                             
+       95 +                                                              
+       96 +## BUG-07 — After reloading the cart, a second coupon can be a
+          +dded in the UI                                                
+       97 +                                                              
+       98 +- **Source:** found by me                                     
+       99 +- **Type:** UI / Logic                                        
+      100 +- **Severity:** Medium                                        
+      101 +- **Priority:** P2 — the user stacks 10% + 15%, and the server
+          + accepts it (BUG-06).                                         
+      102 +- **Preconditions:** a product in the cart.                   
+      103 +- **Steps to reproduce:**                                     
+      104 +  1. Apply `FLOCK10` → OK. Applying another one is blocked (co
+          +rrect).                                                       
+      105 +  2. Reload the page.                                         
+      106 +  3. Apply `BIENVENIDA15`.                                    
+      107 +- **Expected result:** error "Only one coupon can be used per 
+          +purchase."                                                    
+      108 +- **Actual result:** both coupons are listed and both discount
+          +s are applied.                                                
+      109 +- **Automated test:** `tests/ui-bugs.spec.ts` — `[BUG-07]`    
+      110 +- **Root cause in the code (optional):** `app/web/src/cart.tsx
+          +` uses `couponAppliedRef` (starts `false` on every page load) 
+          +instead of checking `coupons.length > 0` from the persisted ca
+          +rt.                                                           
+      111 +                                                              
+      112 +## BUG-08 — Products added with "Add" from the catalog disappe
+          +ar on reload (User report 3)                                  
+      113 +                                                              
+      114 +- **Source:** user report 3                                   
+      115 +- **Type:** Logic / Data                                      
+      116 +- **Severity:** Medium                                        
+      117 +- **Priority:** P2 — lost carts mean lost sales. The spec says
+          + the cart persists even after closing the browser.            
+      118 +- **Preconditions:** empty cart.                              
+      119 +- **Steps to reproduce:**                                     
+      120 +  1. On the product list, click **Add** on the Ceramic mug. Th
+          +e header shows "Cart (1)".                                    
+      121 +  2. Reload the page (or close and reopen the browser).       
+      122 +- **Expected result:** the mug is still in the cart.          
+      123 +- **Actual result:** the cart is empty. Products added from th
+          +e **detail page** do persist, which explains why the user wrot
+          +e "*some* things disappear".                                  
+      124 +- **Automated test:** `tests/ui-bugs.spec.ts` — `[BUG-08]`    
+      125 +- **Root cause in the code (optional):** `app/web/src/pages/Ca
+          +talog.tsx` calls `cart.setItems(...)` directly, which skips `p
+          +ersist()` / `localStorage`. It should use `cart.add(product, 1
+          +)`.                                                           
+      126 +                                                              
+      127 +## BUG-09 — The cart can hold more units than the available st
+          +ock                                                           
+      128 +                                                              
+      129 +- **Source:** found by me                                     
+      130 +- **Type:** Logic                                             
+      131 +- **Severity:** Medium                                        
+      132 +- **Priority:** P2 — it is the UI path to overselling (BUG-03)
+          +. The spec says users can't buy more than the stock.          
+      133 +- **Preconditions:** Ergonomic chair (id 8), stock 2.         
+      134 +- **Steps to reproduce:**                                     
+      135 +  1. On the chair's detail page, pick 2 and click **Add to car
+          +t**. Repeat.                                                  
+      136 +  2. (Or click **Add** 3 times on the chair in the catalog.)  
+      137 +  3. Open the cart.                                           
+      138 +- **Expected result:** quantity capped at 2, or a message sayi
+          +ng no more stock is available.                                
+      139 +- **Actual result:** quantity 4 (detail) or 3 (catalog), and c
+          +heckout proceeds.                                             
+      140 +- **Automated test:** `tests/ui-bugs.spec.ts` — `[BUG-09]` (×2
+          +)                                                             
+      141 +- **Root cause in the code (optional):** `mergeItem` in `app/w
+          +eb/src/cart.tsx` adds quantities without capping at `product.s
+          +tock`. The cap exists only in `updateQuantity`.               
+      142 +                                                              
+      143 +## BUG-10 — Line totals are rounded down, so some totals are 1
+          + cent off                                                     
+      144 +                                                              
+      145 +- **Source:** found by me                                     
+      146 +- **Type:** Logic                                             
+      147 +- **Severity:** Medium                                        
+      148 +- **Priority:** P3 — small amounts, but the charged amount doe
+          +sn't match price × quantity, which matters for accounting and 
+          +customer trust.                                               
+      149 +- **Preconditions:** none.                                    
+      150 +- **Steps to reproduce:**                                     
+      151 +  1. Add 3 × Ceramic mug ($8.35) to the cart.                 
+      152 +- **Expected result:** line total and total $25.05.           
+      153 +- **Actual result:** $25.04. The same happens with 6 or 9 mugs
+          + and with 3 or 6 Urban backpacks, and the order/payment are st
+          +ored with the wrong amount.                                   
+      154 +- **Automated test:** `tests/ui-bugs.spec.ts` — `[BUG-10]`    
+      155 +- **Root cause in the code (optional):** `lineTotal` in `app/s
+          +hared/money.ts` uses `Math.floor` (8.35 × 3 = 25.049999… in fl
+          +oating point) instead of `Math.round`.                        
+      156 +                                                              
+      157 +## BUG-11 — Order dates use the UTC day instead of Argentina t
+          +ime                                                           
+      158 +                                                              
+      159 +- **Source:** found by me                                     
+      160 +- **Type:** Logic / UI                                        
+      161 +- **Severity:** Low                                           
+      162 +- **Priority:** P3 — wrong date for orders placed between 21:0
+          +0 and 23:59 Argentina time. Confusing, and may matter for retu
+          +rns or invoices.                                              
+      163 +- **Preconditions:** logged in as Ana. Seed order #2 was creat
+          +ed at `2026-10-15T02:30:00Z` (= 10/14/2026 23:30 in Buenos Air
+          +es).                                                          
+      164 +- **Steps to reproduce:**                                     
+      165 +  1. Open **My orders**, then order #2.                       
+      166 +- **Expected result:** `10/14/2026 · 23:30`.                  
+      167 +- **Actual result:** `10/15/2026 · 23:30`. The time is convert
+          +ed to Argentina time but the date isn't.                      
+      168 +- **Automated test:** `tests/ui-bugs.spec.ts` — `[BUG-11]`    
+      169 +- **Root cause in the code (optional):** `formatOrderDate` in 
+          +`app/server/api.ts` takes the date from `iso.slice(0, 10)` (UT
+          +C) instead of formatting it with `timeZone: America/Argentina/
+          +Buenos_Aires`.                                                
+      170 +                                                              
+      171 +## BUG-12 — Checkout rejects names and addresses with accents,
+          + ñ or º (assumption)                                          
+      172 +                                                              
+      173 +- **Source:** found by me                                     
+      174 +- **Type:** Logic                                             
+      175 +- **Severity:** Medium                                        
+      176 +- **Priority:** P2 — an Argentine store where "García", "Muñoz
+          +" or "3º B" can't be entered blocks real customers from buying
+          +, and the error ("Please fill in the shipping details") doesn'
+          +t explain why.                                                
+      177 +- **Assumption:** the spec doesn't define validation rules. I 
+          +assume any real name/address must be accepted. If the PO confi
+          +rms ASCII-only is intended, then this is only a misleading err
+          +or message.                                                   
+      178 +- **Steps to reproduce:**                                     
+      179 +  1. At checkout, enter name `Ana García Muñoz` and address `A
+          +v. Corrientes 1234, 3º B`, then pay.                          
+      180 +- **Expected result:** the order is created.                  
+      181 +- **Actual result:** `400 "Please fill in the shipping details
+          +."`                                                           
+      182 +- **Automated test:** `tests/api-checkout.spec.ts` — `[BUG-12]
+          +`                                                             
+      183 +- **Root cause in the code (optional):** `SAFE_TEXT = /^[A-Za-
+          +z0-9 .,#/-]+$/` in `app/server/api.ts`.                       
+      184 +                                                              
+      185 +---                                                           
+      186 +                                                              
+      187 +## Note on the existing tests                                 
+      188 +                                                              
+      189 +`tests/cart.spec.ts` ("the cart total is calculated correctly"
+          +) only checks that the total is *visible*, never its value, so
+          + it passes no matter what the total is. It gives false confide
+          +nce. BUG-10's test checks the actual amounts.                 
+
+● Write(ANALYSIS.md)
+  ⎿  Added 28 lines, removed 3 lines
+       2  
+       3  ## Questions for the PO (prioritized)
+       4  
+       5 -1.                                                             
+       5 +1. **Payment timeouts:** what should the user see if the proces
+         +sor takes longer than expected? Should we wait, show "processin
+         +g", or check the status afterwards? Retries must never create a
+         + second charge. (Directly related to user report 1 / BUG-02.)  
+       6 +2. **Stock:** is stock reserved when an item is added to the ca
+         +rt, or only checked at payment? What happens if stock runs out 
+         +between adding to the cart and paying: an error, or adjusting t
+         +he quantity?                                                   
+       7 +3. **Coupons:** does the percentage apply before or after shipp
+         +ing/taxes (there are none today)? Can a coupon be used more tha
+         +n once per user? Do coupons expire? Is there a minimum purchase
+         +? How should a rounded discount be handled (to the cent, half-u
+         +p)?                                                            
+       8 +4. **Order privacy:** confirm that a user may only see their ow
+         +n orders and payments (we found that's not the case, BUG-01).  
+       9 +5. **Shipping and card validation:** which characters are allow
+         +ed in name/address (accents, ñ, º)? Is any 16-digit number vali
+         +d, or should we run a Luhn check / check expiry / CVV? Is an ad
+         +dress just one line, or do we need city, postal code and provin
+         +ce?                                                            
+      10 +6. **Confirmation email:** what does it contain, when is it sen
+         +t, and how can QA verify it? It can't be checked in this local 
+         +environment.                                                   
+      11 +7. **Prices:** if a product's price changes while it is in the 
+         +cart, which price is charged (the one shown or the current one)
+         +?                                                              
+      12 +8. **Cart persistence:** "persists even if the user closes the 
+         +browser": per device or per account? Should the cart follow the
+         + user across devices after login? What happens to the guest car
+         +t when they log in?                                            
+      13 +9. **Dates:** should the date format be `MM/DD/YYYY` (US) or `D
+         +D/MM/YYYY` (Argentina)? Should payments also show a date?      
+      14 +10. **Search/filter:** should search match descriptions or part
+         +ial words, and be accent-insensitive? Can search and category b
+         +e combined?                                                    
+      15  
+      16  ## Ambiguities found
+      17  
+       9 --                                                              
+      18 +- "Users can't buy more than the available stock" doesn't say *
+         +where* this is enforced (detail page, cart, checkout) or what m
+         +essage the user gets.                                          
+      19 +- "Minimum 1" for quantity: what happens if the user types 0 or
+         + clears the field (remove the item, or reset to 1)? No maximum 
+         +per order is given.                                            
+      20 +- "Only one coupon per purchase" doesn't say whether the backen
+         +d must enforce it or only the UI.                              
+      21 +- "Totals are shown in dollars with two decimals" doesn't defin
+         +e the rounding rule (per line vs. per order, round vs. truncate
+         +).                                                             
+      22 +- "The payment is processed and the order is created": the orde
+         +r of operations and what happens on partial failure (payment ap
+         +proved, order not saved) aren't defined.                       
+      23 +- "Log in before paying": should the cart survive the redirect 
+         +to login and back? (It does today.)                            
+      24 +- "They can also see their payments": which fields? Do declined
+         + payments appear?                                              
+      25 +- "Argentina time" applies to "dates and times", but the date f
+         +ormat isn't specified.                                         
+      26 +- No mention of logout behavior, session expiry, or what a gues
+         +t sees under My orders.                                        
+      27  
+      28  ## Assumptions I make to move forward
+      29  
+      13 --                                                              
+      30 +- The **backend must enforce** every business rule (stock, quan
+         +tity ≥ 1 and whole, one coupon), not just the UI. The API is pu
+         +blic (`docs/API.md`).                                          
+      31 +- A user can only access **their own** orders and payments. Any
+         +thing else returns 404/403.                                    
+      32 +- An approved payment must always end in the confirmation scree
+         +n. The user must never be told "failed" for a payment that was 
+         +charged.                                                       
+      33 +- Money is rounded half-up to the cent per line, and price × qu
+         +antity must match exact decimal arithmetic.                    
+      34 +- Coupon codes are case-insensitive **and** the discount is the
+         + same whatever case is typed.                                  
+      35 +- Real names/addresses with Spanish characters (á, ñ, º) are va
+         +lid.                                                           
+      36 +- Dates: `MM/DD/YYYY` stays as is (it's what the app uses), but
+         + both the date and the time must be in Argentina time.         
+      37 +- The confirmation email can't be verified locally. I assume it
+         +'s sent after a successful order, and I didn't test it (questio
+         +n 6).                                                          
+      38 +- Declined cards (ending `0000`) must not create a payment or a
+         +n order, and keep the cart. This was verified and works.       
+
+● Write(ai\README.md)
+  ⎿  Added 12 lines, removed 5 lines
+       2  
+       3  ## Tools and models
+       4  
+       5 --                                                              
+       5 +- **Claude Code** (CLI, model Claude Opus 5.5) working directly
+         + in the repo: reading files, running the app and the Playwright
+         + suite.                                                        
+       6  
+       7  ## What I delegated to AI
+       8  
+       9 --                                                              
+       9 +- Reading `SPEC.md`, `USER_REPORTS.md`, `docs/API.md` and the a
+         +pp source, and producing a first list of suspected bugs with li
+         +kely root causes.                                              
+      10 +- Analyzing the seed data to find concrete repro cases (e.g. wh
+         +ich price × quantity combos hit the rounding bug: 3 × $8.35; wh
+         +ich seed order sits near midnight in Argentina time: order #2).
+      11 +- Drafting the Playwright tests (UI and API), `BUGS.md` and `AN
+         +ALYSIS.md`.                                                    
+      12  
+      13  ## What I verified and how
+      14  
+      13 --                                                              
+      15 +- **Every bug has a test that fails today** for the reason desc
+         +ribed. We ran `npm test` and read each failure's actual value (
+         +e.g. `percent: 0` for `flock10`, `$25.04` vs `$25.05`, `10/15/2
+         +026` vs `10/14/2026`, an approved `$129` payment after the "pay
+         +ment failed" message). The existing example tests still pass.  
+      16 +- Reproduced the user reports manually in the browser: <!-- TOD
+         +O: confirm you did this, e.g. report 1 with the chair, report 2
+         + with flock10, report 3 with catalog "Add" + reload -->        
+      17 +- Checked that the tests follow the challenge rules: bug ID in 
+         +the name, `resetData` in `beforeEach`, `data-testid` locators, 
+         +no access to `app/`, no `skip`/`fixme`/`fail`.                 
+      18 +- Made sure the tests would **pass on a fixed version** and not
+         + depend on each other's bugs (e.g. the BUG-09 catalog test navi
+         +gates in-app so BUG-08's lost cart doesn't hide it, and the BUG
+         +-02 "not charged" test accepts either a success screen or an er
+         +ror with no charge).                                           
+      19  
+      20  ## What I discarded or corrected from the output, and why
+      21  
+      17 --                                                              
+      22 +- The first draft of the BUG-09 catalog test reloaded the page 
+         +before checking the cart. Because of BUG-08 the cart was then e
+         +mpty, so the test **passed vacuously**. It was rewritten to nav
+         +igate without reloading.                                       
+      23 +- BUG-12 (accented names rejected) is kept but explicitly marke
+         +d as an **assumption**, because the spec defines no validation 
+         +rules.                                                         
+      24 +- <!-- TODO: add anything you personally changed, re-prioritize
+         +d or rejected -->                                              
+      25  
+      26  ## Evidence
+      27  
+      21 -Links, exports or snippets of your sessions (you can add files 
+         -to this folder).                                               
+      28 +- Test run output: 18 bug tests failing, 2 existing tests passi
+         +ng (`npx playwright test`). The HTML report is generated in `pl
+         +aywright-report/`.                                             
+
+● Update(ANALYSIS.md)
+  ⎿  Added 1 line, removed 1 line
+      35  - Real names/addresses with Spanish characters (á, ñ, º) are va
+          lid.
+      36  - Dates: `MM/DD/YYYY` stays as is (it's what the app uses), but
+           both the date and the time must be in Argentina time.
+      37  - The confirmation email can't be verified locally. I assume it
+          's sent after a successful order, and I didn't test it (questio
+          n 6).
+      38 -- Declined cards (ending `0000`) must not create a payment or a
+         -n order, and keep the cart. This was verified and works.       
+      38 +- Declined cards (ending `0000`) must not create a payment or a
+         +n order, and keep the cart. The code returns `402` before savin
+         +g anything, so this looks correct; I didn't write a test for it
+         +.                                                              
+
+● PowerShell(git status --short; Get-Content .gitignore)
+  ⎿   M ANALYSIS.md
+      M BUGS.md
+      M ai/README.md
+     … +8 lines (ctrl+o to expand)
+
+● I've written all four deliverables. Each of the 12 bugs has at least one test
+  that fails today for the reason described, and the team's two existing tests
+  still pass. Nothing is committed yet.
+
+  Bugs in BUGS.md, in priority order:
+
+  ┌────────┬──────────────────────────────────────────────────────┬──────────┐
+  │   ID   │                         Bug                          │ Severity │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-01 │ Any logged-in user can read other users' orders (Ana │ Critical │
+  │        │  can open Bruno's order #3, address included)        │          │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-02 │ Report 1: payments over $100 show "failed" after 3   │ Critical │
+  │        │ s, but the card is charged and the order is created  │          │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-03 │ The API sells more than the stock (it never returns  │ Critical │
+  │        │ the 409 the docs promise), so stock goes negative    │          │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-04 │ The API accepts quantities of 0, -1 and 1.5; -1      │ High     │
+  │        │ creates an order with a negative total               │          │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-05 │ Report 2: flock10 in lowercase is "applied" but      │ High     │
+  │        │ gives 0%                                             │          │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-06 │ The API accepts several coupons, or the same one     │ High     │
+  │        │ twice                                                │          │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-07 │ After reloading the cart, a second coupon can be     │ Medium   │
+  │        │ added                                                │          │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-08 │ Report 3: items added with the catalog's "Add"       │ Medium   │
+  │        │ button vanish on reload                              │          │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-09 │ The cart can hold more units than the stock          │ Medium   │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-10 │ Rounding: 3 mugs cost $25.04 instead of $25.05       │ Medium   │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │ BUG-11 │ Order dates use the UTC day, not Argentina time      │ Low      │
+  │        │ (order #2 shows 10/15 instead of 10/14)              │          │
+  ├────────┼──────────────────────────────────────────────────────┼──────────┤
+  │        │ Names or addresses with accents, ñ or º are          │          │
+  │ BUG-12 │ rejected; marked as an assumption since the spec     │ Medium   │
+  │        │ sets no rules                                        │          │
+  └────────┴──────────────────────────────────────────────────────┴──────────┘
+
+  Files:
+  - ANALYSIS.md has 10 questions for the product owner in priority order, plus
+    the unclear points and assumptions.
+  - The tests are in tests/api-checkout.spec.ts and tests/ui-bugs.spec.ts, plus
+    a small API login helper I added to tests/helpers.ts.
+  - BUGS.md also notes that the team's cart.spec.ts only checks that the total
+    is visible, not its value, so it can never catch a wrong total.
+  - ai/README.md is mostly filled in, with two TODO spots that only you can
+    honestly write.
+
+  Before you submit:
+  1. Reproduce the 3 user reports yourself in the browser (npm run dev), then
+     fill in the TODO about it in ai/README.md. Checking my work is part of what
+     they grade.
+  2. Skim BUGS.md and change any priority or wording you disagree with. Note
+     those changes in the second TODO.
+  3. BUG-12 is the riskiest call. They run the tests against a fixed version of
+     the app, and if they don't treat accented names as a bug, that test will
+     fail there. Keep it or drop it, your choice.
+
+  Should I commit and push now? The optional extra, fixing bugs one commit each,
+  would take more time, and time counts. I'd skip it, or fix only BUG-05 and
+  BUG-08 since they're one-line changes.
+
+✻ Crunched for 6m 19s · done 3:47 PM
+
+※ recap: We're doing the ShopNow QA challenge: the analysis, 12 bugs, failing tests and the AI notes are written but not committed yet. Next, reproduce the three user reports yourself and fill in the two TODOs in ai/README.md, then tell me to commit and push. (disable recaps in /config)
+
+❯ i think its a good idea to add screenshots or something to show as evidence   
+  on the evidence folder                                                        
+
+● I'll write a script that captures a screenshot of each UI bug, plus the
+  request and response for each API bug, and saves them to evidence/.
+
+● Write(evidence\capture.mjs)
+  ⎿  Wrote 171 lines to evidence\capture.mjs
+       1 // Captures screenshots (UI bugs) and request/response JSON (API
+          bugs) into evidence/.
+         ture.mjs`.
+       3 import { writeFileSync } from "node:fs";
+       4 import { dirname, join } from "node:path";
+       6 import { chromium, request as apiRequest } from "@playwright/tes
+         t";
+       7 
+       9 const OUT = dirname(fileURLToPath(import.meta.url));
+      10 const ANA = { email: "ana@shopnow.test", password: "Ana12345" };
+     … +186 lines (ctrl+o to expand)
+
+● PowerShell(try { (Invoke-WebRequest http://localhost:4321 -UseBasicParsing
+            -TimeoutSec 3).StatusCode } catch { "not running" })
+  ⎿  200
+
+● PowerShell(node evidence/capture.mjs; Get-ChildItem evidence | Select-Object
+            Name, Length)
+  ⎿  saved BUG-01-api-other-user-order.json (200)
+     saved BUG-03-api-oversell-stock.json (201)
+     saved BUG-04-api-negative-quantity.json (201)
+     … +25 lines (ctrl+o to expand)
+  ⎿  (timeout 3m)
+
+● Let me check a few of the captures to make sure they show the bug.
+
+  Read 3 files (ctrl+o to expand)
+
+● The evidence holds: the payments page shows the $129 charge approved despite
+  the failed checkout, both coupons apply together, and the negative-quantity
+  order totals -$8.35 with stock rising to 26. Next I'm linking the files from
+  BUGS.md and documenting the script.
+
+● Update(BUGS.md)
+  ⎿  Added 17 lines
+       2  
+       3  Sorted by priority (most important first). Test data comes from
+           a fresh `npm run reset`.
+       4  
+       5 +**Evidence** is in [`evidence/`](evidence/): screenshots (`.png
+         +`) for UI bugs and the full request/response (`.json`) for API 
+         +bugs, named by bug ID. They can be regenerated with `node evide
+         +nce/capture.mjs` (see `TESTING.md`).                           
+       6 +                                                               
+       7 +| Bug | Evidence |                                             
+       8 +|---|---|                                                      
+       9 +| BUG-01 | `BUG-01-ana-sees-bruno-order.png`, `BUG-01-api-other
+         +-user-order.json` |                                            
+      10 +| BUG-02 | `BUG-02a-payment-failed-message.png` → `BUG-02b-paym
+         +ent-approved-anyway.png` |                                     
+      11 +| BUG-03 | `BUG-03-api-oversell-stock.json` (201, `stockAfter: 
+         +-1`) |                                                         
+      12 +| BUG-04 | `BUG-04-api-negative-quantity.json` (total -8.35, `s
+         +tockAfter: 26`) |                                              
+      13 +| BUG-05 | `BUG-05-lowercase-coupon-0-percent.png`, `BUG-05-api
+         +-lowercase-coupon.json` |                                      
+      14 +| BUG-06 | `BUG-06-api-stacked-coupons.json` |                 
+      15 +| BUG-07 | `BUG-07-two-coupons-after-reload.png` |             
+      16 +| BUG-08 | `BUG-08a-added-from-catalog.png` → `BUG-08b-cart-emp
+         +ty-after-reload.png` |                                         
+      17 +| BUG-09 | `BUG-09-cart-4-chairs-stock-2.png` |                
+      18 +| BUG-10 | `BUG-10-3-mugs-25.04.png` |                         
+      19 +| BUG-11 | `BUG-11-order-2-wrong-date.png` |                   
+      20 +| BUG-12 | `BUG-12-api-accented-name-rejected.json` |          
+      21 +                                                               
+      22  ---
+      23  
+      24  ## BUG-01 — Any logged-in user can read other users' orders (na
+          me, address, items)
+
+● Write(TESTING.md)
+  ⎿  Wrote 23 lines to TESTING.md
+       1 # Testing
+       2 
+       3 ## Automated regression tests (evaluated)
+       5 ```bash
+       6 npm test
+       7 ```
+       8 
+         05, 06, 12).
+      10 - `tests/ui-bugs.spec.ts`: UI bugs (BUG-02, 05, 07, 08, 09, 10, 
+         11).
+     … +17 lines (ctrl+o to expand)
+
+● Update(ai\README.md)
+  ⎿  Added 1 line
+      30  
+      31  ## Evidence
+      32  
+      33 +- `evidence/`: screenshots and API request/response captures ge
+         +nerated by an AI-written script (`evidence/capture.mjs`). I rev
+         +iewed the images to confirm each one actually shows the bug.   
+      34  - Test run output: 18 bug tests failing, 2 existing tests passi
+          ng (`npx playwright test`). The HTML report is generated in `pl
+          aywright-report/`.
+
+● I added the evidence for all 12 bugs to evidence/: 11 screenshots for the bugs
+  you can see in the browser, and 6 request/response files for the API bugs. I
+  opened three of them to confirm they show the bug:
+  - BUG-02: "My payments" lists the $129 charge as Approved, even though the
+    checkout said the payment failed.
+  - BUG-07: both coupons are applied together, bringing the total to $21.52.
+  - BUG-04: the -1 quantity created an order with a total of -$8.35, and stock
+    went up to 26.
+
+  What changed:
+  - evidence/capture.mjs is the script that regenerates all of it. Run npm run 
+    dev, then node evidence/capture.mjs.
+  - BUGS.md now has a table near the top linking each bug to its evidence files.
+  - TESTING.md explains how to run the tests and the capture script. The
+    challenge README asks for this when you include tools outside tests/.
+  - ai/README.md now has an evidence line saying you reviewed the images. I only
+    opened three, so look through the rest yourself or reword that line. The
+    "anything you changed" TODO is still open for you.
+
+  Running the script reset the app's data on your running dev server, so
+  anything you'd added by hand is gone.
+
+  Should I commit and push now?
+
+✻ Crunched for 1m 10s · done 4:26 PM
+
+❯ how do you know you cant apply both coupons? they are different               
+● The spec says so directly. In SPEC.md, under "Discount coupons":
+
+  ▎ Discounts are applied with a code: only one per purchase. If a coupon is 
+  ▎ already applied, another one can't be added (the current one must be removed
+  ▎ first).
+
+  So it doesn't matter that FLOCK10 and BIENVENIDA15 are different codes. Only
+  one coupon can be on a purchase at a time, whichever it is.
+
+  The app's own code agrees, which is why I'm confident it's a bug and not just
+  my reading:
+  - If you apply FLOCK10 and then try BIENVENIDA15 without reloading, the cart
+    blocks it with "Only one coupon can be used per purchase." The developers
+    meant to enforce the rule.
+  - The check breaks on reload (BUG-07): the flag that tracks "a coupon is
+    already applied" resets on every page load, even though the coupon itself is
+    still saved in the cart.
+  - The server never enforces the rule (BUG-06): it accepts any number of
+    coupons and adds their discounts together.
+
+  You can see the first point yourself in the browser. Apply FLOCK10, then
+  BIENVENIDA15 without reloading, and you'll get the error. Reload the page, try
+  BIENVENIDA15 again, and both get applied.
+
+  One related thing the spec doesn't cover is whether the same coupon could
+  count twice. The "one per purchase" rule rules that out anyway, which is why
+  BUG-06 also tests ["FLOCK10","FLOCK10"].
+
+✻ Worked for 5s · done 4:28 PM
+
+※ recap: You're doing the ShopNow QA challenge, and the analysis, 12 bug reports, failing tests and evidence are all written but not committed. Next, reword the "reviewed the images" line in ai/README.md, then tell me to commit and push. (disable recaps in /config)
+
+❯ why are you using same BUG-ID for different bugs?                             
+
+● Each ID is one bug. Some bugs have more than one test because one test
+  wouldn't cover the whole bug. The repeated IDs are:
+
+  ┌────────┬───────┬─────────────────────────────────────────────────────────┐
+  │   ID   │ Tests │                    Why more than one                    │
+  ├────────┼───────┼─────────────────────────────────────────────────────────┤
+  │        │       │ One checks the user sees the order instead of an error. │
+  │ BUG-02 │ 2     │  The other checks that if an error is shown, the card   │
+  │        │       │ wasn't charged.                                         │
+  ├────────┼───────┼─────────────────────────────────────────────────────────┤
+  │ BUG-04 │ 3     │ The same missing check, tried with three bad            │
+  │        │       │ quantities: 0, -1 and 1.5.                              │
+  ├────────┼───────┼─────────────────────────────────────────────────────────┤
+  │ BUG-05 │ 2     │ One checks the coupon API, one checks the cart page.    │
+  │        │       │ Same broken function underneath.                        │
+  ├────────┼───────┼─────────────────────────────────────────────────────────┤
+  │ BUG-06 │ 2     │ Two different coupons, and the same coupon twice. Both  │
+  │        │       │ break the "one per purchase" rule.                      │
+  ├────────┼───────┼─────────────────────────────────────────────────────────┤
+  │ BUG-09 │ 2     │ Two ways into the cart: the product detail page and the │
+  │        │       │  catalog's "Add" button.                                │
+  └────────┴───────┴─────────────────────────────────────────────────────────┘
+
+  The challenge rules ask for the bug ID in each test's name, so whoever grades
+  it can link every test to its report. Several tests with the same ID is
+  normal.
+
+  If two of them look like separate bugs to you, the strongest case is BUG-09.
+  The two ways in are different buttons, and fixing one wouldn't fix the other.
+  I'd keep it as one, since it's the same symptom against the same rule and only
+  one test fails without its fix. If you'd rather split it, I can make the
+  catalog version BUG-13. Tell me which way you want it.
+
+✻ Brewed for 6s · done 4:32 PM
+
+❯ what does they mean by Links, exports or snippets of your sessions (you can   
+  add files to this folder)., our chat? evidence of the tests?                  
+  ⎿  ⧉ Selected 1 lines from ai\README.md in Visual Studio Code
+
+● That line is about our chat. They want to see how you worked with the AI: what
+  you asked, what it answered, and where you questioned it. Your test evidence
+  is already in evidence/ and the test files.
+
+  To export this conversation, type /export in Claude Code. It can copy the
+  conversation to your clipboard or save it as a text file. Save it inside the
+  ai/ folder with a name like ai/claude-code-session.txt, then add one line
+  under "Evidence" in ai/README.md:
+
+  - `ai/claude-code-session.txt`: full export of the Claude Code session.
+
+  The most useful parts for a grader are your own questions: why both coupons
+  can't be applied, and why some bug IDs repeat. They show you questioned my
+  output instead of accepting it, which is what the "how you verify the AI"
+  criterion is about. 
+
+✻ Worked for 7s · done 4:34 PM
+
+※ recap: You're doing the ShopNow QA challenge; the bug reports, failing tests and screenshots are done, and we're finishing the AI write-up in `ai/README.md`. Next, run `/export`, save the chat as `ai/claude-code-session.txt`, then commit and push.
+
+❯ ok so lets commit and push and start checking one by one if we can add some   
+  fixes, one per commit, probably start with the ones in the app, then check    
+  the API                                                                       
+
+● Update(ai\README.md)
+  ⎿  Error editing file
+
+● PowerShell(git add -A; git status --short; git commit -q -m @'
+            Add spec analysis, bug reports, regression tests and evidence…)
+  ⎿  warning: in the working copy of 'ANALYSIS.md', LF will be replaced by
+     CRLF the next time Git touches it
+     warning: in the working copy of 'BUGS.md', LF will be replaced by CRLF
+     … +38 lines (ctrl+o to expand)
+
+● Pushed. You edited ai/README.md just before the commit, so my one-line cleanup
+  didn't apply. Let me check what's there now.
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● You already took out that line, so ai/README.md is fine. Now the fixes,
+  starting with the browser-side ones.
+
+  BUG-08: the catalog's "Add" button skips saving to storage.
+
+● Update(app\web\src\pages\Catalog.tsx)
+  ⎿  Added 2 lines, removed 2 lines
+      21    }, [query, category]);
+      22  
+      23    const addToCart = (product: Product) => {
+      24 -    cart.setItems((items) => mergeItem(items, product, 1));    
+      25 -    setMessage(`${product.name} was added to your cart.`);     
+      24 +    const error = cart.add(product, 1);                        
+      25 +    setMessage(error ?? `${product.name} was added to your cart
+         +.`);                                                           
+      26    };
+      27  
+      28    return (
+
+● Update(app\web\src\pages\Catalog.tsx)
+  ⎿  Added 1 line, removed 1 line
+      1  import { useEffect, useState } from "react";
+      2  import { formatMoney } from "../../../shared/money";
+      3  import { api, type Product } from "../api";
+      4 -import { mergeItem, useCart } from "../cart";                   
+      4 +import { useCart } from "../cart";                              
+      5  import { Link } from "../router";
+      6  
+      7  const CATEGORIES = ["Home", "Tech", "Clothing", "Accessories"];
+
+● PowerShell(npx playwright test -g "BUG-08" --reporter=line 2>&1 |
+            Select-Object -Last 3)
+  ⎿  [1/1] [chromium] › ui-bugs.spec.ts:75:1 › [BUG-08] a product added fro
+     m the catalog stays in the cart after reload
+       1 passed (1.7s)
+  ⎿  (timeout 2m)
+
+● PowerShell(git add app/web/src/pages/Catalog.tsx; git commit -q -m @'
+            [BUG-08] Persist products added from the catalog…)
+  ⎿  87e2932 [BUG-08] Persist products added from the catalog
+  ⎿  PostToolUse:PowerShell says: Tip: Run /ultrareview before you push to catch
+     bugs with a cloud-based multi-agent review — 3 free reviews left.
+
+● BUG-07 and BUG-09 both live in cart.tsx, but I'm committing them separately,
+  starting with BUG-07 by checking for an applied coupon against the saved
+  coupons instead of a flag that resets on reload.
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ wait push first, before checking the fixes                                    
+
+● Your main work is already on GitHub. I pushed it as a511a78 before starting
+  the fixes, with the analysis, the bug reports, the tests and the evidence.
+
+  The only thing not pushed is the BUG-08 fix (87e2932), which exists only on
+  your machine. Its test passes.
+
+  Should I push the BUG-08 fix now, or wait until you've checked it in the
+  browser? To check it: run npm run dev, click "Add" on a product in the
+  catalog, reload, and the product should still be in the cart.
+
+✻ Churned for 4s · done 4:47 PM
+
+❯ got it, dont push anything, i need to check the work first                    
+
+  Wrote 1 memory (ctrl+o to expand)
+
+● Bash(echo "- [No push without review](no-push-without-review.md) — commit
+      locally, push only when the user says so" >>
+      "/c/Users/milo_/.claude/projects/C--Users-milo…)
+  ⎿  (No output)
+
+● Understood, I won't push anything until you say so. I've also saved that as a
+  standing rule for this project.
+
+  The BUG-08 fix (87e2932) is committed on your machine only. To check it:
+  1. Run npm run dev and open http://localhost:4321
+  2. Click Add on any product in the catalog.
+  3. Reload the page. The cart should still show the product.
+
+  The code change is in app/web/src/pages/Catalog.tsx. The "Add" button now goes
+  through the same save-to-storage step as the product detail page.
+
+  When you're happy with it, tell me and I'll move on to BUG-07, the second
+  coupon after a reload. I'll keep committing each fix locally for you to check.
+
+✻ Cogitated for 9s · done 4:48 PM
+
+❯ that one works, lets run the tests, that one should pass                      
+● PowerShell(npx playwright test --reporter=line 2>&1 | Select-String -Pattern
+            "^\s+\d+\) |passed|failed" | Select-Object -Last 25)
+  ⎿  Error: Exit code 1
+     [13/20] [chromium] › ui-bugs.spec.ts:33:1 › [BUG-02] a payment the user is 
+     told failed must not be charged
+       11) [chromium] › ui-bugs.spec.ts:33:1 › [BUG-02] a payment the user is 
+     told failed must not be charged 
+       17 failed
+         [chromium] › ui-bugs.spec.ts:33:1 › [BUG-02] a payment the user is told
+     failed must not be charged 
+       3 passed (3.2m)
+
+● PowerShell(npx playwright test --list 2>&1 | Out-Null; Get-Content
+            test-results/.last-run.json)
+  ⎿  {
+       "status": "failed",
+       "failedTests": [
+     … +19 lines (ctrl+o to expand)
+
+● The BUG-08 test passes now. The full run ended with 3 passed and 17 failed:
+
+  - Passing: the BUG-08 test plus the team's two existing tests.
+  - Still failing: the other 17 tests, which cover the 11 bugs we haven't fixed
+    yet. That's expected.
+
+  Before the fix it was 2 passed and 18 failed, so exactly one test changed:
+  BUG-08's. Fixing it didn't break anything else.
+
+  The BUG-09 test for the catalog's "Add" button still fails as it should. The
+  fix routes that button through the normal add-to-cart path, which doesn't
+  check stock yet. That's what BUG-09's fix will handle.
+
+  Next is BUG-07, the second coupon after a reload. Ready for me to start it?
+
+✻ Churned for 3m 24s · done 4:52 PM
+
+❯ lets fix that one 07                                                          
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(app\web\src\cart.tsx)
+  ⎿  Added 2 lines, removed 5 lines
+      76    };
+      77  
+      78    const applyCoupon = async (code: string) => {
+      79 -    if (couponAppliedRef.current) {                            
+      79 +    if (coupons.length > 0) {                                  
+      80        throw new Error("Only one coupon can be used per purchase
+          .");
+      81      }
+      82      const coupon = await api<Coupon>("/coupons/validate", { met
+          hod: "POST", body: { code } });
+      83 -    couponAppliedRef.current = true;                           
+      84 -    persist(items, [...coupons, coupon]);                      
+      83 +    persist(items, [coupon]);                                  
+      84    };
+      85  
+      86    const removeCoupon = (code: string) => {
+      88 -    couponAppliedRef.current = false;                          
+      87      persist(items, coupons.filter((c) => c.code !== code));
+      88    };
+      89  
+      90    const clear = () => {
+      93 -    couponAppliedRef.current = false;                          
+      91      persist([], []);
+      92    };
+      93  
+
+● Update(app\web\src\cart.tsx)
+  ⎿  Removed 1 line
+      49    const initial = useRef(readStoredCart()).current;
+      50    const [items, setItems] = useState<CartItem[]>(initial.items)
+          ;
+      51    const [coupons, setCoupons] = useState<Coupon[]>(initial.coup
+          ons);
+      52 -  const couponAppliedRef = useRef(false);                      
+      52  
+      53    const persist = (nextItems: CartItem[], nextCoupons: Coupon[]
+          ) => {
+      54      setItems(nextItems);
+
+● PowerShell(npx playwright test -g "BUG-07|BUG-05|EXAMPLE|cart total"
+            --reporter=line 2>&1 | Select-String -Pattern
+            "✘|passed|failed|Expected|Received")
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ wait, remember each fix should be part of a different commit so lets commit   
+  the fix of 08 first                                                           
+
+● PowerShell(git log --oneline -3; git status --short)
+  ⎿  87e2932 [BUG-08] Persist products added from the catalog
+     a511a78 Add spec analysis, bug reports, regression tests and evidence
+     5abb9d0 Initial commit
+      M app/web/src/cart.tsx
+
+● The BUG-08 fix is already in its own commit, 87e2932 [BUG-08] Persist products
+  added from the catalog. I made it before you checked it in the browser. It's
+  local only and hasn't been pushed.
+
+  The only uncommitted change is the BUG-07 fix in app/web/src/cart.tsx, so it
+  will get its own commit too:
+  - The bug: the "coupon already applied" check used a flag that reset on every
+    page load.
+  - The fix: it now checks whether the cart already has a coupon. That
+    information is saved, so it survives a reload.
+  - One more problem it fixes: if you removed every product from the cart, the
+    coupon was dropped but the flag stayed set, so you couldn't apply a coupon
+    after adding products again.
+
+  Should I run the BUG-07 test and commit it as [BUG-07] if it passes? You could
+  also try it in the browser first: apply FLOCK10, reload, and try
+  BIENVENIDA15. You should get "Only one coupon can be used per purchase."
+
+✻ Baked for 6s · done 4:55 PM
+
+❯ lets fix 07 and thats it                                                      
+
+● PowerShell(npx playwright test -g "BUG-07|BUG-05|EXAMPLE|cart total"
+            --reporter=line 2>&1 | Select-String -Pattern
+            "passed|failed|›.*BUG-0\d.*$" | Select-Object -Last 8)
+  ⎿  Error: Exit code 1
+       1) [chromium] › api-checkout.spec.ts:42:1 › [BUG-05] the coupon code is 
+     case-insensitive in the API 
+     [4/5] [chromium] › ui-bugs.spec.ts:48:1 › [BUG-05] a lowercase coupon code 
+     applies the discount
+       2) [chromium] › ui-bugs.spec.ts:48:1 › [BUG-05] a lowercase coupon code 
+     applies the discount ─────
+     [5/5] [chromium] › ui-bugs.spec.ts:59:1 › [BUG-07] a second coupon cannot 
+     be added after reloading the cart
+       2 failed
+         [chromium] › api-checkout.spec.ts:42:1 › [BUG-05] the coupon code is 
+     case-insensitive in the API 
+         [chromium] › ui-bugs.spec.ts:48:1 › [BUG-05] a lowercase coupon code 
+     applies the discount ──────
+       3 passed (10.1s)
+
+● The BUG-07 test passes. The two BUG-05 failures are expected, since that bug
+  isn't fixed yet. Committing:
+
+● PowerShell(git add app/web/src/cart.tsx; git commit -q -m @'
+            [BUG-07] Enforce one coupon per purchase after reload…)
+  ⎿  error: pathspec 'applied flag was a ref that reset on every page load
+     while the
+     coupons themselves were persisted. Check the persisted coupons instead
+     … +8 lines (ctrl+o to expand)
+
+● The quotation marks in the message broke the PowerShell command, so the commit
+  didn't happen. I'll pass the message through a file instead.
+
+● Bash(cd "/c/Users/milo_/OneDrive/Documentos/Tech Assesment/shopnowchallenge"
+      && git commit -q -F - <<'EOF'
+      [BUG-07] Enforce one coupon per purchase after reload…)
+  ⎿  387d118 [BUG-07] Enforce one coupon per purchase after reload
+     87e2932 [BUG-08] Persist products added from the catalog
+     a511a78 Add spec analysis, bug reports, regression tests and evidence
+     5abb9d0 Initial commit
+
+● I fixed BUG-07, its test passes, and it's committed separately. Your local
+  history is now:
+
+  387d118 [BUG-07] Enforce one coupon per purchase after reload
+  87e2932 [BUG-08] Persist products added from the catalog
+  a511a78 Add spec analysis, bug reports, regression tests and evidence
+
+  The two fix commits are not pushed. To check BUG-07 in the browser (npm run 
+  dev):
+  1. Apply FLOCK10 in the cart.
+  2. Reload the page.
+  3. Try BIENVENIDA15. It should be blocked with "Only one coupon can be used
+     per purchase."
+
+  The server still accepts several coupons if someone calls the API directly.
+  That's BUG-06, which we're not fixing, so its tests will keep failing.
+
+  Before you submit, you might add a line to BUG-07 and BUG-08 in BUGS.md,
+  something like "Fixed in commit 387d118" and "Fixed in commit 87e2932", so the
+  grader can find the fixes easily. Tell me if you want that or the push.
+
+✻ Crunched for 28s · done 4:56 PM
+
+※ recap: You're doing the ShopNow QA challenge; the docs, tests and evidence are pushed, and the BUG-08 and BUG-07 fixes are committed locally only. Next, check BUG-07 in the browser, then tell me whether to push.
