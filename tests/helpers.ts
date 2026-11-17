@@ -11,6 +11,17 @@ export async function resetData(request: APIRequestContext) {
   expect(res.ok()).toBeTruthy();
 }
 
+/** Logs in through the API; the request context keeps the `sid` cookie for later calls. */
+export async function apiLogin(request: APIRequestContext, user: { email: string; password: string } = USERS.ana) {
+  const res = await request.post("/api/login", { data: user });
+  expect(res.ok()).toBeTruthy();
+}
+
+export const VALID_CHECKOUT = {
+  shipping: { name: "Ana Garcia", address: "1234 Corrientes Ave" },
+  card: { number: "4242424242424242" },
+};
+
 export async function login(page: Page, user: { email: string; password: string } = USERS.ana) {
   await page.goto("/login");
   await page.getByTestId("login-email").fill(user.email);

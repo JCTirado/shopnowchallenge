@@ -1,0 +1,51 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/checkout",
+    "body": {
+      "items": [
+        {
+          "productId": 8,
+          "quantity": 3
+        }
+      ],
+      "coupons": [],
+      "shipping": {
+        "name": "Ana Garcia",
+        "address": "1234 Corrientes Ave"
+      },
+      "card": {
+        "number": "4242424242424242"
+      }
+    },
+    "as": "ana@shopnow.test"
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "id": 4,
+      "userId": 1,
+      "createdAt": "2026-11-17T21:25:36.379Z",
+      "items": [
+        {
+          "productId": 8,
+          "name": "Ergonomic chair",
+          "price": 129,
+          "quantity": 3
+        }
+      ],
+      "coupons": [],
+      "subtotal": 387,
+      "discount": 0,
+      "total": 387,
+      "shipping": {
+        "name": "Ana Garcia",
+        "address": "1234 Corrientes Ave"
+      },
+      "paymentId": 4,
+      "displayDate": "11/17/2026",
+      "displayTime": "18:25"
+    }
+  },
+  "stockAfter": -1
+}

@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/coupons/validate",
+    "body": {
+      "code": "flock10"
+    },
+    "as": "ana@shopnow.test"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "code": "flock10",
+      "percent": 0
+    }
+  }
+}

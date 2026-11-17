@@ -1,0 +1,40 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/orders/3",
+    "body": null,
+    "as": "ana@shopnow.test"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "id": 3,
+      "userId": 2,
+      "createdAt": "2026-10-20T13:45:00.000Z",
+      "items": [
+        {
+          "productId": 6,
+          "name": "Mechanical keyboard",
+          "price": 89.9,
+          "quantity": 1
+        }
+      ],
+      "coupons": [
+        {
+          "code": "FLOCK10",
+          "percent": 10
+        }
+      ],
+      "subtotal": 89.9,
+      "discount": 8.99,
+      "total": 80.91,
+      "shipping": {
+        "name": "Bruno Diaz",
+        "address": "742 Evergreen St, Rosario"
+      },
+      "paymentId": 3,
+      "displayDate": "10/20/2026",
+      "displayTime": "10:45"
+    }
+  }
+}

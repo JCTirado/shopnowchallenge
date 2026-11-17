@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/checkout",
+    "body": {
+      "items": [
+        {
+          "productId": 1,
+          "quantity": 1
+        }
+      ],
+      "coupons": [],
+      "shipping": {
+        "name": "Ana García Muñoz",
+        "address": "Av. Corrientes 1234, 3º B"
+      },
+      "card": {
+        "number": "4242424242424242"
+      }
+    },
+    "as": "ana@shopnow.test"
+  },
+  "response": {
+    "status": 400,
+    "body": {
+      "error": "Please fill in the shipping details."
+    }
+  },
+  "stockAfter": 25
+}
