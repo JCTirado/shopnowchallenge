@@ -110,7 +110,7 @@ Sorted by priority (most important first). Test data comes from a fresh `npm run
 - **Automated test:** `tests/api-checkout.spec.ts` — `[BUG-06]` (×2)
 - **Root cause in the code (optional):** `POST /checkout` loops over all `coupons` and `cartTotals` (`app/shared/money.ts`) sums every discount. The one-coupon rule exists only in the UI.
 
-## BUG-07 — After reloading the cart, a second coupon can be added in the UI
+## BUG-07 — After reloading the cart, a second coupon can be added in the UI (Fixed in commit 387d118)
 
 - **Source:** found by me
 - **Type:** UI / Logic
@@ -126,7 +126,7 @@ Sorted by priority (most important first). Test data comes from a fresh `npm run
 - **Automated test:** `tests/ui-bugs.spec.ts` — `[BUG-07]`
 - **Root cause in the code (optional):** `app/web/src/cart.tsx` uses `couponAppliedRef` (starts `false` on every page load) instead of checking `coupons.length > 0` from the persisted cart.
 
-## BUG-08 — Products added with "Add" from the catalog disappear on reload (User report 3)
+## BUG-08 — Products added with "Add" from the catalog disappear on reload (User report 3) (Fixed in commit 87e2932)
 
 - **Source:** user report 3
 - **Type:** Logic / Data
